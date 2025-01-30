@@ -2,7 +2,7 @@
 # 1. Base image
 # -------------------------------------
 # Use the official Rust image to build our application
-FROM rust:latest AS builder
+FROM rust:1.84 AS builder
 # Install watchexec
 RUN cargo install watchexec-cli
 # Create a new empty shell project
@@ -12,7 +12,7 @@ COPY Cargo.toml Cargo.lock ./
 # Copy the source code
 COPY src ./src
 # Build our application
-RUN cargo build
+RUN cargo install --path .
 # -------------------------------------
 # 2. Development stage
 # -------------------------------------
