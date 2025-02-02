@@ -6,7 +6,8 @@ use diesel_async::{
     AsyncPgConnection,
 };
 
-pub async fn async_postgres() -> Result<Pool<AsyncPgConnection>, Box<dyn Error>> {
+/// Create a new connection pool to a PostgreSQL database
+pub async fn build_postgres_pool() -> Result<Pool<AsyncPgConnection>, Box<dyn Error>> {
     let connection_url = std::env::var("DATABASE_URL")?;
     let manager = AsyncDieselConnectionManager::<AsyncPgConnection>::new(connection_url);
     let pool = Pool::builder().build(manager).await?;

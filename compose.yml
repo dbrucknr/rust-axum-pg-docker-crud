@@ -8,6 +8,9 @@ services:
       - .env
     volumes:
       - .:/app       # Mount the local project directory to /app in the container
+    depends_on:
+      - database
+
   database:
     container_name: postgres-database
     image: postgres:17.2
@@ -17,6 +20,7 @@ services:
       - "5432:5432"
     env_file:
       - .env
+      
   pgweb:
     container_name: pgweb
     image: sosedoff/pgweb
