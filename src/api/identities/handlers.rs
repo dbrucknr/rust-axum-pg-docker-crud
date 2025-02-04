@@ -1,6 +1,6 @@
 // Third Party Dependencies
-use axum::extract::{Json as ExtractJson, Path, State};
-use axum::{debug_handler, http::StatusCode, response::Result, Json};
+use axum::extract::{Path, State};
+use axum::{debug_handler, extract, http::StatusCode, response::Result, Json};
 use diesel::prelude::*;
 use diesel::SelectableHelper;
 use diesel_async::RunQueryDsl;
@@ -48,7 +48,7 @@ pub async fn one(
 
 pub async fn create(
     State(state): State<AppState>,
-    ExtractJson(payload): ExtractJson<CreateIdentity>,
+    extract::Json(payload): extract::Json<CreateIdentity>,
 ) -> Result<Json<Identity>, (StatusCode, String)> {
     let conn = &mut state.pg.get().await.map_err(internal_error)?;
     // INSERT INTO identities (email, password) VALUES ('email', 'password');
@@ -64,7 +64,7 @@ pub async fn create(
 pub async fn update(
     State(state): State<AppState>,
     Path(id): Path<i32>,
-    ExtractJson(payload): ExtractJson<UpdateIdentity>,
+    extract::Json(payload): extract::Json<UpdateIdentity>,
 ) -> Result<Json<Identity>, (StatusCode, String)> {
     let conn = &mut state.pg.get().await.map_err(internal_error)?;
     let target = identities::table.filter(identities::id.eq(id));
@@ -76,7 +76,15 @@ pub async fn update(
     Ok(Json(result))
 }
 
-pub async fn remove(Path(id): Path<u32>, State(state): State<AppState>) -> String {
-    // let conn = &mut state.pg.get().await.map_err(internal_error)?;
-    format!("DELETE /identities/{id}")
+pub async fn remove(
+    State(state): State<AppState>,
+    Path(id): Path<i32>,
+) -> Result<Json<String>, (StatusCode, String)> {
+    let conn = &mut state.pg.get().await.map_err(internal_error)?;
+    let target = identities::table.filter(identities::id.eq(id));
+    let result = diesel::delete(target)
+        .execute(conn)
+        .await
+        .map_err(internal_error)?;
+    Ok(Json(format!("DELETED: {} Identities", result)))
 }

@@ -23,6 +23,7 @@ pub struct CreateIdentity {
     pub email: String,
 }
 
+// I need a way of auto-updating the updated_at field.
 #[derive(Deserialize, AsChangeset)]
 #[diesel(table_name = identities)]
 pub struct UpdateIdentity {
