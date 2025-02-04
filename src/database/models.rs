@@ -15,3 +15,17 @@ pub struct Identity {
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
 }
+
+#[derive(Insertable, Serialize, Deserialize)]
+#[diesel(table_name = identities)]
+pub struct CreateIdentity {
+    pub name: String,
+    pub email: String,
+}
+
+#[derive(Deserialize, AsChangeset)]
+#[diesel(table_name = identities)]
+pub struct UpdateIdentity {
+    pub name: Option<String>,
+    pub email: Option<String>,
+}
