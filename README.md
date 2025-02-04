@@ -1,5 +1,15 @@
 # Running the API:
 
+- You will need to add a `.env` file in the root directory with the following structure:
+
+```
+POSTGRES_PORT=5432
+POSTGRES_USER="postgres"
+POSTGRES_PASSWORD="postgres"
+POSTGRES_DB="postgres"
+DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-database:${POSTGRES_PORT}/${POSTGRES_DB}"
+```
+
 - Docker Compose
 
   - `docker compose build`
