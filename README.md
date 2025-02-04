@@ -10,18 +10,19 @@
 
 - If not using Docker Compose: `watchexec --restart --watch src --exts rs -- cargo run`
 
-  - Note this command requires the installation of `watchexec-cli`
+  - Note: Database Service is Required for app to launch. Make sure to either manually launch + configure the database, or comment out all database relevant code.
+  - Note: this command requires the installation of `watchexec-cli`
   - Use this command to add it: `cargo install --locked watchexec-cli`
 
-## Dependencies
+## Installed Dependencies + Method
 
-cargo new axum-pg-docker-crud
-cargo add axum
-cargo add tokio --features=full
-cargo add serde --features=derive
-cargo add chrono
-cargo add diesel --features=chrono,postgres
-cargo add diesel-async --features bb8,postgres
+`cargo new axum-pg-docker-crud`
+`cargo add axum`
+`cargo add tokio --features=full`
+`cargo add serde --features=derive`
+`cargo add chrono`
+`cargo add diesel --features=chrono,postgres`
+`cargo add diesel-async --features bb8,postgres`
 
 ### Diesel ORM
 
