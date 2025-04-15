@@ -1,0 +1,8 @@
+### Create Identity
+POST http://localhost:3000/api/identities
+Content-Type: application/json
+
+{
+    "name": "Larry Page",
+    "email": "larry_page@provider.com"
+}
