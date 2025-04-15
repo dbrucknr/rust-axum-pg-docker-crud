@@ -11,16 +11,20 @@ use crate::api::state::AppState;
 use crate::database::models::{CreateIdentity, Identity, UpdateIdentity};
 use crate::database::schema::identities;
 
+use crate::api::extractors::AsyncPostgres;
+
 #[debug_handler] // Debugging Macro - Remove
 pub async fn all(
-    State(state): State<AppState>,
+    // State(state): State<AppState>,
+    _: State<AppState>,
+    AsyncPostgres(mut conn): AsyncPostgres,
 ) -> Result<Json<Vec<Identity>>, (StatusCode, String)> {
     // Extract a PostgreSQL connection from the application state.
-    let conn = &mut state.pg.get().await.map_err(internal_error)?;
+    // let conn = &mut state.pg.get().await.map_err(internal_error)?;
     // Generate a SQL Query: SELECT * FROM identities;
     let results = identities::table
         .select(Identity::as_select())
-        .load::<Identity>(conn)
+        .load::<Identity>(&mut conn)
         .await
         .map_err(internal_error)?;
     // Default Return: JSON List of Identities | [].
@@ -29,16 +33,18 @@ pub async fn all(
 
 #[debug_handler] // Debugging Macro - Remove
 pub async fn one(
-    State(state): State<AppState>,
     Path(id): Path<i32>,
+    _: State<AppState>,
+
+    AsyncPostgres(mut conn): AsyncPostgres,
 ) -> Result<Json<Option<Identity>>, (StatusCode, String)> {
     // Extract a PostgreSQL connection from the application state.
-    let conn = &mut state.pg.get().await.map_err(internal_error)?;
+    // let conn = &mut state.pg.get().await.map_err(internal_error)?;
     // Generate a SQL Query: SELECT * FROM identities WHERE id = $1;
     let result = identities::table
         .find(id)
         .select(Identity::as_select())
-        .first::<Identity>(conn)
+        .first::<Identity>(&mut conn)
         .await
         .optional()
         .map_err(internal_error)?;
